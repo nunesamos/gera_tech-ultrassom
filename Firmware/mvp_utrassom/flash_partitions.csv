@@ -1,0 +1,9 @@
+# Name,   Type, SubType, Offset,  Size, Flags
+# Particao de RTOS [20.5KBytes]
+nvs,      data, nvs,     0x9000,  0x5000,
+# Particao para OTA [8.2KBytes]
+otadata,  data, ota,     0xe000,  0x2000,
+# Particao de Memoria de Programa [2.6MBytes]
+app0,     app,  ota_0,   0x10000, 0x280000,
+# Particao spiffs [1.5MBytes]
+spiffs,   data, spiffs,  0x290000, 0x170000,
