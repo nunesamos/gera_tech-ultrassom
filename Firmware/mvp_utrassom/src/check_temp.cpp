@@ -27,7 +27,11 @@ bool read_temp(){
     
     delay(100);
 
-    return true;
+    if (LM35_TempC_Sensor1 > 32){
+      return true;
+    }
+
+    return false;
 }
 
 uint32_t readADC_Cal(int ADC_Raw)
