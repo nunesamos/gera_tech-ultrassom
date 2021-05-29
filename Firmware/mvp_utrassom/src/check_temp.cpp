@@ -3,11 +3,10 @@
 #include "esp_adc_cal.h"
 
 
-bool read_temp(){
+float read_temp(){
 
     int LM35_Raw_Sensor1 = 0;
     float LM35_TempC_Sensor1 = 0.0;
-    float LM35_TempF_Sensor1 = 0.0;
     float Voltage = 0.0;
 
     // Read LM35_Sensor1 ADC Pin
@@ -16,7 +15,22 @@ bool read_temp(){
     Voltage = readADC_Cal(LM35_Raw_Sensor1); 
     // TempC = Voltage(mV) / 10
     LM35_TempC_Sensor1 = Voltage / 10;
-    LM35_TempF_Sensor1 = (LM35_TempC_Sensor1 * 1.8) + 32;
+
+    print_temp(LM35_TempC_Sensor1);
+
+    return LM35_TempC_Sensor1;
+
+}
+
+uint32_t readADC_Cal(int ADC_Raw){
+  esp_adc_cal_characteristics_t adc_chars;
+  
+  esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, &adc_chars);
+  return(esp_adc_cal_raw_to_voltage(ADC_Raw, &adc_chars));
+}
+
+void print_temp(float LM35_TempC_Sensor1){
+    float LM35_TempF_Sensor1 = (LM35_TempC_Sensor1 * 1.8) + 32;
     // Print The Readings
     Serial.print("Temperature = ");
     Serial.print(LM35_TempC_Sensor1);
@@ -24,20 +38,4 @@ bool read_temp(){
     Serial.print("Temperature = ");
     Serial.print(LM35_TempF_Sensor1);
     Serial.println(" °F");
-    
-    delay(100);
-
-    if (LM35_TempC_Sensor1 > 32){
-      return true;
-    }
-
-    return false;
-}
-
-uint32_t readADC_Cal(int ADC_Raw)
-{
-  esp_adc_cal_characteristics_t adc_chars;
-  
-  esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, &adc_chars);
-  return(esp_adc_cal_raw_to_voltage(ADC_Raw, &adc_chars));
 }
